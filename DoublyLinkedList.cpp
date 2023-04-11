@@ -7,7 +7,6 @@ struct node
 	struct node* next;
 	struct node* prev;
 };
-/////////////////Добавление в начало\\\\\\\\\\\\\\\\\\
 
 node* AddHead(node* head, node*& tail, int x)
 {
@@ -27,13 +26,13 @@ node* AddHead(node* head, node*& tail, int x)
 		node* element = head;
 		while ((element->next != nullptr) && (element->data != x))
 		{
-			element = element->next;//передвигаем пока значения не равны
+			element = element->next;
 		}
 		if (element->data != x)
 		{
 			head->prev = tmp;
 			tmp->next = head;
-			head = tmp;//голова списка сдвигается влево
+			head = tmp;
 		}
 	}
 	return head;
@@ -50,14 +49,13 @@ void Print_head_tail(node* head, node* tail)
 				std::cout << "| " << head->data << " |<->";
 				head = head->next;
 			}
-			std::cout << "| " << head->data << " |\n";//выводим последний элемент
+			std::cout << "| " << head->data << " |\n";
 		}
 	else std::cout << "empty list\n";
 }
 
 void Print_tail_head(node* head, node* tail)
 {
-
 	if (head == nullptr) std::cout << "empty list\n";
 	else
 	{
@@ -69,24 +67,21 @@ void Print_tail_head(node* head, node* tail)
 		std::cout << "| " << tail->data << " |\n";
 	}
 }
-/////////////////Удаление списка\\\\\\\\\\\\\\\\\\
 
 node* deletelist(node* head, node*& tail)
 {
 	if (head != nullptr)
 	{
-		while (head->next != nullptr) //цикл перестановки головы на следующий
+		while (head->next != nullptr) 
 		{
-			head = head->next;				//и удаления предыдущего
+			head = head->next;				
 			delete(head->prev);
 		}
-		delete(head);		//удаление последнего элемента
+		delete(head);		
 	}
 	tail = nullptr;
 	return nullptr;
 }
-
-//////////////////Удаление заданного\\\\\\\\\\\\\\\
 
 node* Delete(node* head, node*& tail, int x)
 {
@@ -95,13 +90,13 @@ node* Delete(node* head, node*& tail, int x)
 		int i = 0; node* element = head;
 		while (element->next != nullptr)
 		{
-			i += 1; element = element->next; //считаем количество узлов
+			i += 1; element = element->next; 
 		}
 		i += 1;
 		if (x > i)
 		{
 			std::cout << "x above then cout of nodes"; return head;
-		}  //если равен то удаляем последний узел
+		}  
 
 		if (x == 1)
 		{
@@ -134,7 +129,7 @@ node* Delete(node* head, node*& tail, int x)
 	return head;
 };
 
-bool foundnode(node* first, int x)//поиск узла х
+bool foundnode(node* first, int x)
 {
 	bool flag = false; node* element = first;
 	while (element != nullptr)
@@ -145,7 +140,7 @@ bool foundnode(node* first, int x)//поиск узла х
 	return flag;
 }
 
-/////////////////Пересечение списков\\\\\\\\\\\\\\\\\\
+
 
 void unionlist(node* first, node* second, node*& third, node*& thirdend)
 {
@@ -188,9 +183,9 @@ int main()
 	second = AddHead(second, secondend, rand() % 10);
 	second = AddHead(second, secondend, rand() % 10);
 	second = AddHead(second, secondend, rand() % 10);
-	std::cout << "___First list___\n";//выводится первый список
+	std::cout << "___First list___\n";
 	Print_head_tail(first, firstend);
-	std::cout << "___Second list___\n";//выводится второй список в обратном порядке
+	std::cout << "___Second list___\n";
 	Print_tail_head(second, secondend);
 
 	//Пересечение первого и второго списка||
