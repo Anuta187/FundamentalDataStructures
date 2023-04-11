@@ -1,0 +1,247 @@
+#include <iostream>
+#include <tuple>
+
+int tabs   = 0;
+int kol_vo = 0;
+int col    = 0;
+
+struct node
+{
+	char liter;
+	int  data;
+	node* next;
+	node* prev;
+};
+
+struct crown
+{
+	node* head;
+	node* tail;
+};
+
+struct tree
+{
+	crown* crown;
+	tree* left;
+	tree* right;
+};
+
+void DelTree(tree*& branch)
+{
+	if (!branch)
+		return;
+	DelTree(branch->left);
+	DelTree(branch->right);
+	delete branch;
+	branch = nullptr;
+	return;
+}
+
+void PrintList(node*head)
+{
+	node* carrent;
+	if (head != nullptr)
+	{
+		carrent = head;
+		while (carrent != nullptr)
+		{
+			std::cout<<carrent->liter <<carrent ->data << " ";
+			carrent = carrent->next;
+		}
+		std::cout << std::endl;
+	}
+}
+
+void Add(char symb, int val, crown*& list)
+{
+	node* carrent = new node;
+	carrent->liter = symb;
+	carrent->data = val;
+	carrent->next = nullptr;
+	carrent->prev = nullptr;
+	if (list == nullptr)
+	{
+		list = new crown;
+		list->head = new node;
+		list->tail = new node;
+		list->head->next = nullptr;
+		list->head->prev = nullptr;
+		list->tail->next = nullptr;
+		list->tail->prev = nullptr;
+		list->head = carrent;
+		list->tail = carrent;
+	}
+	else
+	{
+		carrent->prev = list->tail;
+		list->tail->next = carrent;
+		list->tail = carrent;
+	}
+
+}
+
+void Add(char symb, int val, tree*& branch)
+{
+	if (!branch)
+	{
+		branch = new tree;
+		branch->crown = new crown;
+		branch->crown = nullptr;
+		Add(symb, val, branch->crown);
+		branch->left = 0;
+		branch->right = 0;
+	}
+	else
+		if (std::tie(branch->crown->head->liter, branch->crown->head->data) != (std::tie(symb, val)))
+		{
+			if (std::tie(branch->crown->head->liter, branch->crown->head->data) < (std::tie(symb, val)))
+			{
+				Add(symb, val, branch->left);
+			}
+			else
+			{
+				Add(symb, val, branch->right);
+			}
+		}
+		else
+			Add(symb, val, branch->crown);
+}
+
+void Delcrown(crown*& list)
+{
+	if (list->head != list->tail)
+	{
+		node* oldtail = list->tail;
+		list->tail = oldtail->prev;
+		list->tail->next = nullptr;
+		delete oldtail;
+		oldtail = nullptr;
+	}
+	else
+	{
+		list->head = nullptr;
+		list->tail = nullptr;
+	}
+}
+
+tree* deleteNode(char symb, int val, tree*& branch)
+{
+	if (branch == nullptr)
+		return branch;
+	if (branch->crown->head->next == nullptr)
+	{
+		if (std::tie(branch->crown->head->liter, branch->crown->head->data) == (std::tie(symb, val)))
+		{
+			tree* tmp;
+			if (branch->left == nullptr)
+				tmp = branch->right;
+			else
+			{
+				tree* ptr = branch->left;
+				if (ptr->right == nullptr)
+				{
+					ptr->right = branch->right;
+					tmp = ptr;
+				}
+				else
+				{
+					tree* pmin = ptr->right;
+					while (pmin->right != nullptr)
+					{
+						ptr = pmin;
+						pmin = ptr->right;
+					}
+					ptr->right = pmin->left;
+					pmin->right = branch->right;
+					pmin->left = branch->left;
+					tmp = pmin;
+				}
+			}
+			delete branch;
+			return tmp;
+		}
+		else if (std::tie(branch->crown->head->liter, branch->crown->head->data) < (std::tie(symb, val)))
+			branch->right = deleteNode(symb, val, branch->right);
+		else
+			branch->left = deleteNode(symb, val, branch->left);
+	}
+	else
+		Delcrown(branch->crown);
+	return branch;
+}
+
+bool search(char buk, int val, tree* branch)
+{
+	if (branch != nullptr)
+	{
+		if (std::tie(branch->crown->head->liter, branch->crown->head->data) == (std::tie(buk, val)))
+			return true;
+		else
+			if (std::tie(branch->crown->head->liter, branch->crown->head->data) < (std::tie(buk, val)))
+				return search(buk, val, branch->left);
+			else
+				return search(buk, val, branch->right);
+	}
+	else
+		return false;
+}
+
+int pr_obh(tree*&branch)
+{	
+	if (branch != nullptr)
+	{
+		pr_obh(branch->left); //Обошли левое поддерево
+		pr_obh(branch->right); //Обошли правое поддерево
+		return col = col + 1;
+	}
+	else return 0;
+}
+
+void print(tree* branch)
+{
+	if (!branch)
+		return;
+	tabs += 5;
+	print(branch->left);
+	for (int i = 0; i < tabs; i++)
+		std::cout << " ";
+	PrintList(branch->crown->head);
+	print(branch->right);
+	tabs -= 5;
+	return;
+}
+
+int main()
+{
+	tree* branch = nullptr;
+	Add('A', 103, branch);
+	Add('D', 659, branch);
+	Add('A', 52, branch);
+	Add('G', 659, branch);
+	Add('A', 52, branch);
+	Add('A', 52, branch);
+	Add('A', 650, branch);
+	Add('A', 10, branch);
+	print(branch);
+	std::cout << std::endl << std::endl << std::endl;
+	branch = deleteNode('A', 103, branch);
+	print(branch);
+	branch = deleteNode('A', 52, branch);
+	print(branch);
+	branch = deleteNode('A', 52, branch);
+	print(branch);
+	branch = deleteNode('A', 52, branch);
+	
+	std::cout << search('A', 103, branch) << std::endl;
+	std::cout << search('A', 113, branch) << std::endl;
+	std::cout << pr_obh(branch) << std::endl;
+	DelTree(branch);
+	Add('A', 10, branch);
+	branch = deleteNode('A', 22, branch);
+	branch = deleteNode('A', 10, branch);
+	Add('A', 10, branch);
+	Add('A', 10, branch);
+	print(branch);
+
+
+}
