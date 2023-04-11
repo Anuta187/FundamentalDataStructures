@@ -10,7 +10,6 @@ struct node
 
 node* AddHead(node* head, node*& tail, int x)
 {
-	//std::cout << x<<" ";
 	node* tmp = new node();
 	tmp->data = x;
 	tmp->prev = nullptr;
