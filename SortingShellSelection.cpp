@@ -1,8 +1,8 @@
 ﻿#include <iostream>
 #include <fstream>
-#include<string>
-#include<tuple>
-#include<chrono>
+#include <string>
+#include <tuple>
+#include <chrono>
 
 
 struct auditorium
